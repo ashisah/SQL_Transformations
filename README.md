@@ -4,7 +4,7 @@ Ingesting a csv into Postgres and normalizing it in SQL and creating relations f
 <h4>Steps</h4>
 <ul>
 *note: must have Python 3 and Postgres set up and installed on machine running the scripts
-    <li>Create a Postgres Database for ingesting csv<li>
+    <li>Create a Postgres Database for ingesting csv</li>
     <li>Set up a .env file with appropriate fields (see Setting up .env file)</li>
     <li>Run create_tables.sql</li>
     <li>Run python3 load_data_postgres</li>
