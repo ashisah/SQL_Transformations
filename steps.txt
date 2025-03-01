@@ -1,0 +1,7 @@
+Prereq: Postgres SQL installed and employees database created
+--run create_employees_table.sql
+--run python3 load_data_postgres
+--run create_country_table, create_dept_table, create_performance_table
+--run insert_country_table, insert_dept_table, insert_performance_table
+--run modify_employee_table.sql
+--run analysis_tables.sql

@@ -1,0 +1,60 @@
+from dotenv import load_dotenv
+import psycopg2
+import os
+from contextlib import closing
+import json
+from psycopg2.extras import execute_values
+from psycopg2 import sql
+import pandas as pd
+
+load_dotenv()
+
+INPUT_CSV = 'employee_data_clean.csv'
+
+DATABASE_NAME = os.getenv("DB_NAME")
+USER = os.getenv("DB_USER")
+PASSWORD = os.getenv("DB_PASSWORD")
+HOST = os.getenv("DB_HOST")
+PORT = os.getenv("DB_PORT")
+
+def get_db_connection():
+    try:
+        return psycopg2.connect(
+            dbname=DATABASE_NAME,
+            user=USER,
+            password=PASSWORD,
+            host=HOST,
+            port=PORT
+        )
+    except psycopg2.Error as e:
+        print(f"Error connecting to PostgreSQL database '{DATABASE_NAME}': {e}")
+        raise 
+
+def insert_data_from_csv(csv_file: str):
+    try:
+        df = pd.read_csv(csv_file, header=0)
+        print(df)
+        with get_db_connection() as connection:
+            with closing(connection.cursor()) as cursor:
+                # Convert DataFrame to a list of tuples for batch insertion
+                data_tuples = [tuple(row) for row in df.to_numpy()]
+                f = open('csv_to_db_column_mapping.json')
+                column_mapping = json.load(f)
+                df.rename(columns=column_mapping, inplace=True)
+                columns = df.columns.tolist()
+
+                execute_values(
+                    cursor,
+                    sql.SQL("INSERT INTO employees ({}) VALUES %s").format(
+                        sql.SQL(', ').join(map(sql.Identifier, columns))
+                    ),
+                    data_tuples
+                )
+                connection.commit()  # Commit the transaction
+        print(f"Inserted {len(df)} records from '{csv_file}' into the database '{DATABASE_NAME}'.")
+    except Exception as e:
+        print(f"Error inserting data from CSV '{csv_file}': {e}")
+
+
+if __name__ == "__main__":
+    insert_data_from_csv(INPUT_CSV)
