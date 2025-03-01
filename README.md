@@ -12,7 +12,7 @@ Ingesting a csv into Postgres and normalizing it in SQL and creating relations f
     <li>Run modify_employee_table.sql</li>
     <li>Run analysis_tables.sql</li>
     <li>Run dataframe_extract.py</li>
-     <li>Run dataframe_analysis.py</li>
+    <li>Run dataframe_analysis.py</li>
 </ul>
 
 <h4>Setup .env file</h4>
