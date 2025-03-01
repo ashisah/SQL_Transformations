@@ -1,0 +1,7 @@
+dotenv
+psycopg2
+contextlib
+json
+pandas
+numpy
+matplotlib
